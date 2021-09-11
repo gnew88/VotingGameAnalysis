@@ -22,6 +22,8 @@ class linearRegression:
             conf = self.result.conf_int()
             summary = pd.concat([params, std, t, p, conf], axis = 1)
             summary.columns = ['Coef', 'Std err', 't-statistic', 'p-value', '[0.025', '0.975]']
+            summary = summary.reset_index(drop = False)
+            summary = summary.rename(columns = {'index': 'Variable'})
         # 完整結果
         else:
             summary =  self.result.summary()
