@@ -118,8 +118,10 @@ st.markdown('---')
 
 st.header('【C】隊伍大小以及有無門檻之交互作用')
 st.markdown('- 僅使用 control 資料表')
-st.markdown('- 模型: ```reg wtp is_large is_pq is_large*is_pq```')
 st.markdown('- 另外也有提供沒有加入交叉項的模型')
+st.markdown('- 模型設定:')
+st.latex(r'wtp = \beta_0+\beta_1\times is\_large+\beta_2\times is\_pq+\beta_3\times is\_pq\times is\_large')
+st.markdown('- 變數解釋: $wtp$ 為願付價格，$is\_large$ 則代表是否分配於大組，$is\_pq$ 則是該遊戲是否有門檻')
 
 try:
     if(len(control_data) != 0):
@@ -243,8 +245,11 @@ st.markdown('---')
 
 st.header('【C & T】是否有實驗組與隊伍大小之交互作用')
 st.markdown('- 檢驗是否有 treatment effect 還有其與隊伍大小是否有交互作用')
-st.markdown('- 模型: ```reg wtp treatment sb bs bb sb*treatment bs*treatment bb*treatment```')
-st.markdown('- control 的 wtp 計算方法分為三種: 兩選舉之和、兩選舉中最大值與最小值')
+st.markdown('- treatment 的 wtp 為原始數據, control 的 wtp 計算方法分為三種: 兩選舉之和、兩選舉中最大值與最小值')
+st.markdown('- 模型設定:')
+st.latex(r'wtp = \beta_0+\beta_1\times treatment+\beta_2\times sb+\beta_3\times bs +\beta_4\times bb +\beta_5\times sb\_treatment+\beta_6\times bs\_treatment+\beta_7\times bb\_treatment')
+st.markdown('- 變數解釋: $wtp$ 為願付價格，$is\_large$ 則代表是否分配於大組，$is\_pq$ 則是該遊戲是否有門檻')
+
 
 try:
     if (len(control_data) == 0 or len(treatment_data) == 0):
