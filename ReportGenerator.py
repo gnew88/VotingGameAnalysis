@@ -66,7 +66,7 @@ class reportGenerator:
         self.document.add_heading('Distribution of Observations', level = 1)
         distriInfo_p = self.document.add_paragraph()
         distriInfo_p.add_run('- Control/treatment group.')
-        distriInfo_p.add_run('\n- Whether they are is large team or small team in two games.')
+        distriInfo_p.add_run('\n- Whether they are in large team or small team in two games.')
         self.add_table(distribution_table)
     
     def data_analysis(self, paired_table, largePq_int_all, largePq_int_sin, largePq_no_all, largePq_no_sin,
