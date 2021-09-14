@@ -42,8 +42,6 @@ class reportGenerator:
         self.document.add_heading('【Voting Game】資料分析報告', level = 0)
 
         ######## basic information ########
-        self.document.add_heading('基本資訊', level = 1)
-
         # today's date 
         date_p = self.document.add_paragraph()
         today = date.today()
