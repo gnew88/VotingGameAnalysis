@@ -116,6 +116,26 @@ except:
 
 st.markdown('---')
 
+st.header('【C】大大 (同) 與大大 (異) 之非成對 t 檢定')
+st.markdown('- 僅使用 control 資料表')
+st.markdown('- 分別檢視在有門檻與沒門檻的情況')
+try:
+    if(len(control_data)!=0):
+        pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost_pq', item2 = 'player.wtp_voting_cost_pq', completed = False, paired = False)
+        no_pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost', item2 = 'player.wtp_voting_cost', completed = False, paired = False)
+        st.markdown('有門檻')
+        st.write(pq.to_html(escape = False), unsafe_allow_html = True)
+        st.write('\n\n')
+        st.markdown('沒門檻')
+        st.write(no_pq.to_html(escape = False), unsafe_allow_html = True)
+    
+    else:
+        st.markdown('```沒有控制組資料!```')
+except:
+    pass
+
+st.markdown('---')
+
 st.header('【C】隊伍大小以及有無門檻之交互作用')
 st.markdown('- 僅使用 control 資料表')
 st.markdown('- 另外也有提供沒有加入交叉項的模型')
@@ -141,34 +161,45 @@ try:
         # run linear regression for all
         int = linearRegression(formula = 'wtp ~ is_large + is_pq + is_large*is_pq', data = wtp_data)
         int_result = int.get_result()
-
+        int_f = int.f_test(hypothesis = "is_pq + is_large:is_pq = 0")
+        
         no_int = linearRegression(formula = 'wtp ~ is_large + is_pq ', data = wtp_data)
         no_int_result = no_int.get_result()
 
         st.subheader('有交乘項 - 全體')
         st.markdown('- 使用的資料是所有的觀測值')
         st.write(int_result.to_html(escape = False), unsafe_allow_html = True)
+        st.write('\n\n')
+        st.markdown('F test')
+        st.write(int_f.to_html(escape = False), unsafe_allow_html = True)        
+
+        st.markdown('---')
 
         # run regression for single player
         st.subheader('有交乘項 - 單一玩家')
         st.markdown('- 以一個玩家為單位建立模型，並紀錄 ```is_large``` 與 ```is_pq``` 之係數正負向結果')
         st.markdown('- 若有 $n$ 個玩家，則重複建立 $n$ 次模型')
         st.markdown('- 表中的數字代表變數係數符合情況之參加者人數')
+        
         # 完整結果
         int_player = single_player_lm(wtp_data = wtp_data, interaction = True)
         int_completed_result = int_player.get_result()
         int_table = int_player.get_table()
         st.write(int_table.to_html(escape = False), unsafe_allow_html = True)
 
+        st.markdown('---')
+
         st.subheader('沒交乘項 - 全體')
         st.write(no_int_result.to_html(escape = False), unsafe_allow_html = True)
         
+        st.markdown('---')
+
         st.subheader('沒交乘項 - 單一玩家')
         no_int_player = single_player_lm(wtp_data = wtp_data, interaction = False)
         no_int_completed_result = no_int_player.get_result()
         no_int_table = int_player.get_table()
         st.write(no_int_table.to_html(escape = False), unsafe_allow_html = True)      
-    
+
     else:
         st.markdown('```沒有控制組資料!```')
 
@@ -262,14 +293,14 @@ try:
         hypothesisList = ['treatment + sb:treatment = 0', 'treatment + bs:treatment = 0', 'treatment + bb:treatment = 0']
         
         st.subheader('控制組當中的 wtp 為兩選舉 wtp 之和')
-        st.markdown('- control 的 wtp = $a + b$')
+        st.markdown('control 的 wtp = $a + b$')
 
         model_sum = linearRegression(formula = 'wtp ~ treatment + sb + bs + bb + sb*treatment + bs*treatment + bb*treatment', data = modify_sum)
         summary_sum = model_sum.get_result(completed=False)
         st.write(summary_sum.to_html(escape = False), unsafe_allow_html = True)
         
         st.write('\n\n')
-        st.markdown('- F 檢定')
+        st.markdown('F 檢定')
         f_sum = pd.DataFrame()
 
         for hypothesis in hypothesisList:
@@ -281,13 +312,13 @@ try:
         st.markdown('---')
 
         st.subheader('控制組當中的 wtp 為兩選舉 wtp 中最大值')
-        st.markdown('- control 的 wtp = $max(a, b)$')
+        st.markdown('control 的 wtp = $max(a, b)$')
         model_max = linearRegression(formula = 'wtp ~ treatment + sb + bs + bb + sb*treatment + bs*treatment + bb*treatment', data = modify_max)
         summary_max = model_max.get_result(completed=False)
         st.write(summary_max.to_html(escape = False), unsafe_allow_html = True)
        
         st.write('\n\n')
-        st.markdown('- F 檢定')       
+        st.markdown('F 檢定')       
         f_max = pd.DataFrame()
 
         for hypothesis in hypothesisList:
@@ -299,14 +330,14 @@ try:
         st.markdown('---')
 
         st.subheader('控制組當中的 wtp 為兩選舉 wtp 中最小值')
-        st.markdown('- control 的 wtp = $min(a, b)$')
+        st.markdown('control 的 wtp = $min(a, b)$')
         model_min = linearRegression(formula = 'wtp ~ treatment + sb + bs + bb + sb*treatment + bs*treatment + bb*treatment', data = modify_min)
         summary_min = model_min.get_result(completed=False)
         st.write(summary_min.to_html(escape = False), unsafe_allow_html = True)
 
         f_min = pd.DataFrame()
         st.write('\n\n')
-        st.markdown('- F 檢定')
+        st.markdown('F 檢定')
 
         for hypothesis in hypothesisList:
             f_min = pd.concat([f_min, model_min.f_test(hypothesis = hypothesis)])
@@ -317,14 +348,14 @@ try:
         st.markdown('---')
 
         st.subheader('控制組當中的 wtp 為有門檻遊戲的 wtp ')
-        st.markdown('- control 的 wtp = wtp_pq')
+        st.markdown('control 的 wtp = wtp_pq')
         model_pq = linearRegression(formula = 'wtp ~ treatment + sb + bs + bb + sb*treatment + bs*treatment + bb*treatment', data = modify_pq)
         summary_pq = model_pq.get_result(completed=False)
         st.write(summary_pq.to_html(escape = False), unsafe_allow_html = True)
 
         f_pq = pd.DataFrame()
         st.write('\n\n')
-        st.markdown('- F 檢定')
+        st.markdown('F 檢定')
 
         for hypothesis in hypothesisList:
             f_pq = pd.concat([f_pq, model_pq.f_test(hypothesis = hypothesis)])
@@ -335,14 +366,14 @@ try:
         st.markdown('---')
 
         st.subheader('控制組當中的 wtp 為沒門檻遊戲的 wtp ')
-        st.markdown('- control 的 wtp = wtp_no_pq')
+        st.markdown('control 的 wtp = wtp_no_pq')
         model_no_pq = linearRegression(formula = 'wtp ~ treatment + sb + bs + bb + sb*treatment + bs*treatment + bb*treatment', data = modify_no_pq)
         summary_no_pq = model_no_pq.get_result(completed=False)
         st.write(summary_no_pq.to_html(escape = False), unsafe_allow_html = True)
 
         f_no_pq = pd.DataFrame()
         st.write('\n\n')
-        st.markdown('- F 檢定')
+        st.markdown('F 檢定')
 
         for hypothesis in hypothesisList:
             f_no_pq = pd.concat([f_no_pq, model_no_pq.f_test(hypothesis = hypothesis)])
@@ -386,6 +417,7 @@ st.markdown('- 格式要再自己手動調整喔!')
 try:
     all_group_result = round(all_group_result, 3)
     int_result = round(int_result, 3)
+    int_f = round(int_f, 3)
     no_int_result = round(no_int_result, 3)
     int_table = round(int_table, 3)
     no_int_table = round(no_int_table, 3)
@@ -400,11 +432,13 @@ try:
     f_min = round(f_min, 3)
     f_pq = round(f_pq, 3)
     f_no_pq = round(f_no_pq, 3)
+    pq = round(pq, 3)
+    no_pq = round(no_pq, 3)
 
     report = reportGenerator()
     report.basic_info(files = files, control_amount = len(control_data), treatment_amount=len(treatment_data))
     report.participants_distribution(distribution_table = sb_distribution)
-    report.data_analysis(paired_table= all_group_result , largePq_int_all = int_result, largePq_int_sin = int_table, 
+    report.data_analysis(pq = pq, no_pq = no_pq, paired_table= all_group_result , largePq_int_all = int_result, largePq_int_f = int_f, largePq_int_sin = int_table, 
                         largePq_no_all = no_int_result, largePq_no_sin = no_int_table,
                         ct_wtp = ct_group_result, sum_reg = summary_sum, 
                         sum_f = f_sum, max_reg = summary_max, max_f = f_max, min_reg = summary_min, 
