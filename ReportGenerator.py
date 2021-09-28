@@ -72,7 +72,7 @@ class reportGenerator:
         distriInfo_p.add_run('\n- 檢視在兩場遊戲當中之大小隊分組情形')
         self.add_table(distribution_table)
     
-    def data_analysis(self, paired_table, largePq_int_all, largePq_int_sin, largePq_no_all, largePq_no_sin,
+    def data_analysis(self, pq, no_pq, paired_table, largePq_int_all, largePq_int_f, largePq_int_sin, largePq_no_all, largePq_no_sin,
                       ct_wtp, sum_reg, sum_f, max_reg, max_f, min_reg, min_f, pq_reg, pq_f, no_pq_reg, no_pq_f):
         ######### Data Analysis ########
         
@@ -83,6 +83,18 @@ class reportGenerator:
         pairedT_p.add_run('\n- 透過成對 t 檢定檢驗在不同隊伍分配情形下，門檻的有無是否造成 wtp 的差異')
         self.add_table(paired_table)
         
+        ##### unpaired t test 
+        self.document.add_heading('【C】有門檻/沒門檻中，大大（同）與大大（異）之 wtp 差異', level = 1)
+        unpaired = self.document.add_paragraph()
+        unpaired.add_run('- 僅使用控制組的資料集')
+        unpaired.add_run('\n- 使用非成對 t 檢定')
+
+        self.document.add_heading('有門檻', level = 2)
+        self.add_table(pq)
+
+        self.document.add_heading('沒門檻', level = 2)
+        self.add_table(no_pq)
+
         ##### The interaction - is_large, is_pq
         space = self.document.add_paragraph()
         space.add_run(' ')        
@@ -100,6 +112,12 @@ class reportGenerator:
         self.document.add_heading('有加入交乘項 - 全體玩家', level = 2)
         self.add_table(largePq_int_all)
         
+        space = self.document.add_paragraph()
+        space.add_run(' ')
+
+        self.document.add_heading('F 檢定', level = 3)
+        self.add_table(largePq_int_f)
+
         space = self.document.add_paragraph()
         space.add_run(' ')
 
