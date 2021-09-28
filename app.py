@@ -121,8 +121,8 @@ st.markdown('- 僅使用 control 資料表')
 st.markdown('- 分別檢視在有門檻與沒門檻的情況')
 try:
     if(len(control_data)!=0):
-        pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost_pq', item2 = 'player.wtp_voting_cost_pq', completed = False, paired = False)
-        no_pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost', item2 = 'player.wtp_voting_cost', completed = False, paired = False)
+        pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost_pq', item2 = 'player.wtp_voting_cost_pq', completed = True, paired = False)
+        no_pq = ttest(group, data1 = bb_same_C, data2 = bb_diff_C, item1 = 'player.wtp_voting_cost', item2 = 'player.wtp_voting_cost', completed = True, paired = False)
         st.markdown('有門檻')
         st.write(pq.to_html(escape = False), unsafe_allow_html = True)
         st.write('\n\n')
